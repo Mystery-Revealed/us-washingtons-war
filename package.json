@@ -1,0 +1,18 @@
+{
+  "name": "us-washingtons-war",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Washington's War: Keep the Army Alive — Unit 2 U.S. History strategy game (TEKS 8.4B, 8.4C, 8.22A, 8.31B). Command the Continental Army from Boston to Yorktown across 7 campaigns and 14 decisions, where the winning move is almost never the glorious one — retreat, drill, endure, and be standing when France's fleet shuts the trap. Server-authoritative Socket.IO backend with a live Teacher Command Center.",
+  "comment": "No npm workspaces: this drive is exFAT, which cannot host the symlinks/junctions workspace linking requires. server/ and client/ install independently; `npm install` here cascades via postinstall.",
+  "scripts": {
+    "postinstall": "npm install --prefix server --no-fund --no-audit && npm install --prefix client --no-fund --no-audit",
+    "dev:server": "npm run dev --prefix server",
+    "dev:client": "npm run dev --prefix client",
+    "test": "npm test --prefix server",
+    "build": "npm run build --prefix client",
+    "start": "node server/src/index.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
