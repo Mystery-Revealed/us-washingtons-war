@@ -25,7 +25,14 @@ export default function MatchView({ state, dispatch }) {
   const meta = begin.meta;
   const waypoints = meta.mapStrip || [];
 
-  const phase = eventCard?.chapter || turn?.chapter;
+  // The engine batches the next campaign's card+turn together with this
+  // campaign's LAST turn:resolution — eventCard AND turn have both already
+  // raced ahead by the time this feedback renders. Pin the header to the last
+  // campaign seen before feedback started so it doesn't read "Campaign 3"
+  // over a Campaign 2 verdict.
+  const settledChapterRef = useRef(null);
+  if (!feedback) settledChapterRef.current = eventCard?.chapter || turn?.chapter || settledChapterRef.current;
+  const phase = feedback ? (settledChapterRef.current || eventCard?.chapter || turn?.chapter) : (eventCard?.chapter || turn?.chapter);
   const lowMeter = Object.entries(match.meters || {}).find(([, v]) => v <= 15);
 
   // The map strip gates the situation card once per campaign. mapDoneForIndex
