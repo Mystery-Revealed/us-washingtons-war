@@ -75,6 +75,16 @@ test('teacher ops require the right PIN', () => {
   assert.equal(manager.setApproval({ joinCode, pin: '0000', requireApproval: false }).error, 'bad_pin');
 });
 
+test('the teacher\'s roster snapshot on join already shows in_progress, not a stale not_started (regression, see memory shared-engine-gamemanager-bug)', () => {
+  const manager = new GameManager();
+  const joinCode = makeSession(manager);
+  const res = join(manager, joinCode, 'Ana');
+  const lobbyUpdates = eventsOf(res.emits, 'lobby:update');
+  assert.equal(lobbyUpdates.length, 1, 'join emits exactly one lobby:update for an auto-start solo student');
+  const student = lobbyUpdates[0].payload.students.find((s) => s.id === res.studentId);
+  assert.equal(student.status, 'in_progress', 'the ONLY roster push before completion must not show a stale not_started');
+});
+
 test('a student joins, the match begins on join, and all-right earns 100% and the strong ending', () => {
   const manager = new GameManager();
   const joinCode = makeSession(manager);
